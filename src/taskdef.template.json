@@ -33,7 +33,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "${AWSLOGS_GROUP}",
+          "awslogs-group": "${AWS_LOGS_GROUP}",
           "awslogs-region": "${AWS_REGION}",
           "awslogs-stream-prefix": "${AWSLOGS_STREAM_PREFIX}"
         }
