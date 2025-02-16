@@ -31,8 +31,18 @@ PRIVATE_RT_ID=$(aws ec2 create-route-table --vpc-id $VPC_ID --region $REGION --q
 aws ec2 associate-route-table --subnet-id $PRIVATE_SUBNET_ID --route-table-id $PRIVATE_RT_ID --region $REGION
 echo "Created Private Route Table: $PRIVATE_RT_ID"
 
+# Step 5: Create Security Group
+SECURITY_GROUP_ID=$(aws ec2 create-security-group --group-name SportsBackupSG --description "Security group for sports data backup" --vpc-id $VPC_ID --region $REGION --query 'GroupId' --output text)
+echo "Created Security Group: $SECURITY_GROUP_ID"
+
+# Step 6: Configure Security Group Rules
+aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 80 --cidr 0.0.0.0/0 --region $REGION
+aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 443 --cidr 0.0.0.0/0 --region $REGION
+aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22 --cidr 0.0.0.0/0 --region $REGION
+
 # Output Results
 echo "VPC ID: $VPC_ID"
 echo "Public Subnet ID: $PUBLIC_SUBNET_ID"
 echo "Private Subnet ID: $PRIVATE_SUBNET_ID"
 echo "Internet Gateway ID: $IGW_ID"
+echo "Security Group ID: $SECURITY_GROUP_ID"
